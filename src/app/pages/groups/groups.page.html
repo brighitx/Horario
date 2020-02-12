@@ -1,0 +1,16 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>groups</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-item *ngFor="let item of grupos">
+      <ion-label>
+        <h1>{{ item.nombre }}</h1>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+  <ion-button (click)="cargar()"></ion-button>
+</ion-content>

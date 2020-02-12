@@ -1,5 +1,7 @@
 {
   "name": "horarioBrighite",
-  "integrations": {},
+  "integrations": {
+    "cordova": {}
+  },
   "type": "angular"
 }

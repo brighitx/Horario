@@ -1,0 +1,9 @@
+<ion-content text-center padding>
+  <ion-list>
+    <ion-item button *ngFor="let item of estudios" (click)="itemSelected(item)">
+      <ion-label>
+        <h1>{{ item.nombre }}</h1>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>
