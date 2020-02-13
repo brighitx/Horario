@@ -34,49 +34,39 @@ export class DatabaseService implements IData {
     });
   }
 
-  private isReady() {
-    return new Promise((resolve, reject) => {
-      if (this.dbReady.getValue()) {
-        resolve();
+  getDatabaseState() {
+    return this.dbReady.asObservable();
+  }
+
+  getEstudies() {
+    return this.database.executeSql("SELECT * from estudios", []).then((data) => {
+      let estudios = [];
+      if (data.rows.length > 0) {
+        for (let i = 0; i < data.rows.length; i++) {
+          estudios.push({
+            idEstudios: data.rows.item(i).idEstudios,
+            nombre: data.rows.item(i).nombre
+          });
+        }
       }
-      else {
-        this.dbReady.subscribe((ready) => {
-          if (ready) {
-            resolve();
-          }
-        });
-      }
+      return estudios;
     })
   }
 
-  getEstudies():Estudios[]{
-    return this.isReady().then(() => {
-        return this.database.executeSql("SELECT * from estudios", []).then((data) => {
-            this.estudios = [];
-            for (let i = 0; i < data.rows.length; i++) {
-              this.estudios.push({
-                idEstudios: data.rows.item(i).idEstudios,
-                nombre: data.rows.item(i).nombre});
-            }
-            return this.estudios;
-          })
-      })
-  }
-
   getGrupos(idEstudio): Grupos[] {
-      this.database.executeSql('Select * from grupo WHERE idEstudios=' + idEstudio + '', []).then((data) => {
-        this.grupos = [];
-        if (data.rows.length > 0) {
-          for (let i = 0; i < data.rows.length; i++) {
-            this.grupos.push({
-              idGrupo: data.rows.item(i).idGrupo,
-              nombre: data.rows.item(i).nombre,
-              idEstudios: data.rows.item(i).idEstudios
-            });
-          }
+    this.database.executeSql('Select * from grupo WHERE idEstudios=' + idEstudio + '', []).then((data) => {
+      this.grupos = [];
+      if (data.rows.length > 0) {
+        for (let i = 0; i < data.rows.length; i++) {
+          this.grupos.push({
+            idGrupo: data.rows.item(i).idGrupo,
+            nombre: data.rows.item(i).nombre,
+            idEstudios: data.rows.item(i).idEstudios
+          });
         }
-      });
-      return this.grupos;
-    }
+      }
+    });
+    return this.grupos;
+  }
 
 }

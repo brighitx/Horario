@@ -10,15 +10,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class StartPage implements OnInit {
   private estudios: Estudios[];
-  
-  constructor(private db: DatabaseService, private route: Router) { }
-  ngOnInit() {
 
-        this.db.getEstudies().subscribe(devs => {
-          this.estudios = devs;
-        });
-
+  constructor(private db: DatabaseService, private route: Router) {
+    this.db.getDatabaseState().subscribe(rdy => {
+      if (rdy) {
+        this.cargarEstudios();
+      }
+    })
   }
+
 
   itemSelected(item) {
     const navigationExtras: NavigationExtras = {
