@@ -15,7 +15,7 @@ export class StartPage implements OnInit {
   ngOnInit() {
     this.db.getDatabaseState().subscribe(rdy => {
       if (rdy) {
-        this.db.getEstudios().subscribe(devs => {
+        this.db.getEstudies().subscribe(devs => {
           this.estudios = devs;
         });
       }

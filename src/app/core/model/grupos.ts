@@ -1,5 +1,5 @@
 export interface Grupos {
-    idGrupo: number;
-    nombre: string;
-    idEstudios: number;
-  }
+  idGrupo: string;
+  nombre: string;
+  idEstudios: string;
+}

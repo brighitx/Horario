@@ -3,22 +3,23 @@ import { Injectable } from '@angular/core';
 import { SQLite, SQLiteObject } from '@ionic-native/sqlite/ngx';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, VirtualTimeScheduler } from 'rxjs';
-
+import { Grupos } from '../core/model/grupos';
+import { IData } from '../interfaces/data-i';
 
 export interface Estudios {
-  idEstudios: number;
+  idEstudios: string;
   nombre: string;
 }
 
 @Injectable({
   providedIn: 'root'
 })
-export class DatabaseService {
+export class DatabaseService implements IData {
   private database: SQLiteObject;
   private dbReady: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
-  estudios = new BehaviorSubject([]);
-  grupos: Grupos[] = [];
+  estudios: Estudios[];
+  grupos: Grupos[];
 
   constructor(private plt: Platform, private sqlite: SQLite, private http: HttpClient) {
     this.plt.ready().then(() => {
@@ -28,74 +29,55 @@ export class DatabaseService {
       })
         .then((db: SQLiteObject) => {
           this.database = db;
-          this.loadEstudios();
+          //this.loadEstudios();
           this.dbReady.next(true);
         });
     });
   }
 
-  getDatabaseState() {
-    return this.dbReady.asObservable();
-  }
-  getEstudios(): Observable<Estudios[]> {
-    return this.estudios.asObservable();
-  }
-
-  loadEstudios() {
-    return this.database.executeSql('Select * from estudios', []).then(data => {
-      const estudios: Estudios[] = [];
-      if (data.rows.length > 0) {
-        for (let i = 0; i < data.rows.length; i++) {
-          estudios.push({
-            idEstudios: data.rows.item(i).idEstudios,
-            nombre: data.rows.item(i).nombre
-          });
-        }
-      }
-      this.estudios.next(estudios);
-    });
-  }
-
-  GetEstudiosA() {
+  private isReady() {
     return new Promise((resolve, reject) => {
-      this.database.executeSql("SELECT * FROM estudios", [])
-        .then(
-          (data) => {
-            console.log('entro en el select all users');
-            let arrayEstudios = [];
-            if (data.rows.length > 0) {
-              for (var i = 0; i < data.rows.length; i++) {
-                arrayEstudios.push({
-                  idEstudios: data.rows.item(i).idEstudios,
-                  nombre: data.rows.item(i).nombre,
-                });
-              }
-              console.log(arrayEstudios);
-              resolve(arrayEstudios);
-            }
-          })
-        .catch((error) => {
-          console.log('error al leer all users ', error)
-          reject(error);
-        }
-        )
+      if (this.dbReady.getValue()) {
+        resolve();
+      }
+      else {
+        this.dbReady.subscribe((ready) => {
+          if (ready) {
+            resolve();
+          }
+        });
+      }
     })
   }
 
-  getGrupos(idEstudio): Grupos[] {
-    this.database.executeSql('Select * from grupo WHERE idEstudios=' + idEstudio + '', []).then((data) => {
-      this.grupos = [];
-      if (data.rows.length > 0) {
-        for (let i = 0; i < data.rows.length; i++) {
-          this.grupos.push({
-            idGrupo: data.rows.item(i).idGrupo,
-            nombre: data.rows.item(i).nombre,
-            idEstudios: data.rows.item(i).idEstudios
-          });
-        }
-      }
-    });
-    return this.grupos;
+  getEstudies(){
+    return this.isReady().then(() => {
+        return this.database.executeSql("SELECT * from estudios", []).then((data) => {
+            this.estudios = [];
+            for (let i = 0; i < data.rows.length; i++) {
+              this.estudios.push(
+                idEstudios: data.rows.item(i).idEstudios,
+                nombre: data.rows.item(i).nombre);
+            }
+            return this.estudios;
+          })
+      })
   }
+
+  getGrupos(idEstudio): Grupos[] {
+      this.database.executeSql('Select * from grupo WHERE idEstudios=' + idEstudio + '', []).then((data) => {
+        this.grupos = [];
+        if (data.rows.length > 0) {
+          for (let i = 0; i < data.rows.length; i++) {
+            this.grupos.push({
+              idGrupo: data.rows.item(i).idGrupo,
+              nombre: data.rows.item(i).nombre,
+              idEstudios: data.rows.item(i).idEstudios
+            });
+          }
+        }
+      });
+      return this.grupos;
+    }
 
 }

@@ -24,8 +24,7 @@ import { HttpClientModule } from '@angular/common/http';
     SqliteDbCopy,
     SQLite,
     SQLitePorter,
-    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-    { provide: IData , useClass: DatabaseService}
+    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]
 })
