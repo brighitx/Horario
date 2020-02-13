@@ -13,13 +13,11 @@ export class StartPage implements OnInit {
   
   constructor(private db: DatabaseService, private route: Router) { }
   ngOnInit() {
-    this.db.getDatabaseState().subscribe(rdy => {
-      if (rdy) {
+
         this.db.getEstudies().subscribe(devs => {
           this.estudios = devs;
         });
-      }
-    });
+
   }
 
   itemSelected(item) {

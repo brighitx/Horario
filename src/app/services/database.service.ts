@@ -29,7 +29,6 @@ export class DatabaseService implements IData {
       })
         .then((db: SQLiteObject) => {
           this.database = db;
-          //this.loadEstudios();
           this.dbReady.next(true);
         });
     });
@@ -50,14 +49,14 @@ export class DatabaseService implements IData {
     })
   }
 
-  getEstudies(){
+  getEstudies():Estudios[]{
     return this.isReady().then(() => {
         return this.database.executeSql("SELECT * from estudios", []).then((data) => {
             this.estudios = [];
             for (let i = 0; i < data.rows.length; i++) {
-              this.estudios.push(
+              this.estudios.push({
                 idEstudios: data.rows.item(i).idEstudios,
-                nombre: data.rows.item(i).nombre);
+                nombre: data.rows.item(i).nombre});
             }
             return this.estudios;
           })
