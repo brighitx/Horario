@@ -36,6 +36,6 @@ export class AppModule {
       .catch((err) => {
         console.log('err' + JSON.stringify(err))
       })
-  }
-  */
+  }*/
+  
 }

@@ -1,0 +1,33 @@
+<ion-header no-border>
+  <ion-toolbar>
+    <ion-title>Curso: {{grupo.nombre}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+<ion-grid>
+  <ion-row>
+    <ion-col *ngFor="let item of diaSemana">
+      {{item.nombre}}
+    </ion-col>
+  </ion-row>
+</ion-grid>
+
+<ion-grid>
+  <ion-row *ngFor="let item of diaSemana">
+  <ion-col>
+      {{item.nombre}}
+  </ion-col>
+  </ion-row>
+</ion-grid>
+
+<ion-grid>
+  <ion-row *ngFor="let item of materia">
+  <ion-col>
+      {{item.nombre}}
+  </ion-col>
+  </ion-row>
+</ion-grid>
+
+</ion-content>

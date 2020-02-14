@@ -1,6 +1,5 @@
 import { Router, NavigationExtras } from '@angular/router';
-
-import { DatabaseService, Estudios } from './../../services/database.service';
+import { DatabaseService } from './../../services/database.service';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -8,17 +7,21 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './start.page.html',
   styleUrls: ['./start.page.scss'],
 })
-export class StartPage implements OnInit {
-  private estudios: Estudios[];
+export class StartPage {
+  private estudios = [];
 
   constructor(private db: DatabaseService, private route: Router) {
     this.db.getDatabaseState().subscribe(rdy => {
       if (rdy) {
-        this.cargarEstudios();
+        this.getEstudios();
       }
     })
   }
-
+  getEstudios() {
+    this.db.getEstudios().then(data => {
+      this.estudios = data;
+    })
+  }
 
   itemSelected(item) {
     const navigationExtras: NavigationExtras = {
