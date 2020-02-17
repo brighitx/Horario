@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DatabaseService, Grupos } from './../../services/database.service';
+import { DatabaseService, Grupos, diaClase } from './../../services/database.service';
 
 @Component({
   selector: 'app-schedule',
@@ -12,15 +12,22 @@ export class SchedulePage {
   grupo: Grupos;
   diaSemana = [];
   materia = [];
-  diaClase = [];
+  diaClase: diaClase[] = [];
+  //diauwu: diaClase;
+  itemList: Array<Object>;
   horaClase = [];
+  total = [];
   constructor(private db: DatabaseService, private activeRoute: ActivatedRoute, private router: Router) {
     this.grupo = this.router.getCurrentNavigation().extras.state.grupo;
+    //this.diauwu = {idDiaClase: "e"};
     this.id = this.grupo.idGrupo;
+    this.itemList = [];
     this.db.getDatabaseState().subscribe(rdy => {
       if (rdy) {
         this.getDiaSemana();
-        this.getMateria();
+        this.getDiaClase();
+        this.getNoseQue();
+        //this.getTotal();
       }
     })
   }
@@ -41,25 +48,31 @@ export class SchedulePage {
     }
   }
 
-  getHoraClase() {
-    
+  getNoseQue(){
+    this.db.readOwo(this.id).then((data) => {
+      this.itemList = <Array<Object>> data;
+      console.log(this.itemList)
+    })
   }
-  getMateria() {
-    if (this.materia.length === 0) {
-      this.db.getMateria(62).then(data => {
-        this.materia = data;
-      })
-    }
+
+
+  getMateria(date) {
+    console.log("ueuwuew", date)
+    this.db.getMateria(date).then(data => {
+      this.materia = data;
+    })
   }
 
   getTotal() {
-    for (let index = 0; index < this.diaClase.length; index++) {
-      if (this.horaClase.length === 0) {
-        this.db.getHoraClase(index, ).then(data => {
-          this.horaClase = data;
+    for (let index = 0, j = 1; index < this.diaClase.length; index++ , j++) {
+      for (let j = 1; j < 6; j++) {
+        this.db.getHoraClase(this.diaClase[index], j).then(data => {
+          console.log(this.diaClase[index])
+          console.log(j)
+          console.log(data)
+          this.getMateria(data);
         })
       }
-
     }
   }
 

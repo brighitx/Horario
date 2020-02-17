@@ -15,13 +15,17 @@ export interface Grupos {
   idEstudios: string;
 }
 
+export interface diaClase {
+  idDiaClase: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class DatabaseService {
   database: SQLiteObject;
   private dbReady: BehaviorSubject<boolean> = new BehaviorSubject(false);
-
+  //diaClase:diaClase[]=[]
   constructor(private plt: Platform, private sqlite: SQLite) {
     this.plt.ready().then(() => {
       this.sqlite.create({
@@ -54,7 +58,7 @@ export class DatabaseService {
     })
   }
 
-  getGrupos(idEstudio){
+  getGrupos(idEstudio) {
     return this.database.executeSql('Select * from grupo WHERE idEstudios=' + idEstudio + '', []).then((data) => {
       let grupos = [];
       if (data.rows.length > 0) {
@@ -70,7 +74,7 @@ export class DatabaseService {
     })
   }
 
-  getNombreDia(){
+  getNombreDia() {
     return this.database.executeSql('Select * from diaSemana', []).then((data) => {
       let diaSemana = [];
       if (data.rows.length > 0) {
@@ -85,7 +89,7 @@ export class DatabaseService {
     })
   }
 
-  getDiaClase(idGrupo){
+  getDiaClase(idGrupo) {
     return this.database.executeSql('Select idDiaClase from diaClase WHERE idGrupo=' + idGrupo + '', []).then((data) => {
       let diaClase = [];
       if (data.rows.length > 0) {
@@ -95,11 +99,12 @@ export class DatabaseService {
           });
         }
       }
+      console.log(JSON.stringify(data));
       return diaClase;
     })
   }
 
-  getHoraClase(idDiaClase, idHoraSemana){
+  getHoraClase(idDiaClase, idHoraSemana) {
     return this.database.executeSql('Select idHoraClase from horaClase WHERE idDiaClase=' + idDiaClase + 'and idHorasSemana=' + idHoraSemana + '', []).then((data) => {
       let horaClase = [];
       if (data.rows.length > 0) {
@@ -113,8 +118,9 @@ export class DatabaseService {
     })
   }
 
-  getMateria(idMateriad){
-    return this.database.executeSql('Select materia.nombre from materia JOIN materiahoraclase ON materiahoraclase.idHoraClase=' + idMateriad + ' and materia.idMateria= materiahoraclase.idMateria', []).then((data) => {      let materia = [];
+  getMateria(idMateriad) {
+    return this.database.executeSql('Select materia.nombre from materia JOIN materiahoraclase ON materiahoraclase.idHoraClase=' + idMateriad + ' and materia.idMateria= materiahoraclase.idMateria', []).then((data) => {
+      let materia = [];
       if (data.rows.length > 0) {
         for (let i = 0; i < data.rows.length; i++) {
           materia.push({
@@ -128,5 +134,19 @@ export class DatabaseService {
     })
   }
 
+  public readOwo(idGrupo) {
+    return new Promise((resolve, reject) => {
+      var query = 'Select idDiaClase from diaClase WHERE idGrupo=' + idGrupo + '';
+      this.database.executeSql(query, []).then((res) => {
+        let todos = [];
+        if (res.rows.length > 0) {
+          todos.push(res.rows.item(0))
+        }
+        resolve(todos)
+      }, (error) => {
+        reject(error);
+      });
+    })
+  }
 
 }
