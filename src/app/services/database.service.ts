@@ -19,13 +19,21 @@ export interface diaClase {
   idDiaClase: string;
 }
 
+export interface horaClase {
+  idHoraClase: string;
+}
+
+export interface materia {
+  nombre: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class DatabaseService {
   database: SQLiteObject;
   private dbReady: BehaviorSubject<boolean> = new BehaviorSubject(false);
-  //diaClase:diaClase[]=[]
+
   constructor(private plt: Platform, private sqlite: SQLite) {
     this.plt.ready().then(() => {
       this.sqlite.create({
@@ -99,13 +107,12 @@ export class DatabaseService {
           });
         }
       }
-      console.log(JSON.stringify(data));
       return diaClase;
     })
   }
 
-  getHoraClase(idDiaClase, idHoraSemana) {
-    return this.database.executeSql('Select idHoraClase from horaClase WHERE idDiaClase=' + idDiaClase + 'and idHorasSemana=' + idHoraSemana + '', []).then((data) => {
+  getHoraClase(idDiaClasey, idHoraSemana) {
+    return this.database.executeSql('Select idHoraClase from horaClase WHERE idHorasSemana =' + idHoraSemana + ' and idDiaClase="' + idDiaClasey + '" ', []).then((data) => {
       let horaClase = [];
       if (data.rows.length > 0) {
         for (let i = 0; i < data.rows.length; i++) {
@@ -124,9 +131,7 @@ export class DatabaseService {
       if (data.rows.length > 0) {
         for (let i = 0; i < data.rows.length; i++) {
           materia.push({
-            idMateria: data.rows.item(i).idMateria,
-            nombre: data.rows.item(i).nombre,
-            completo: data.rows.item(i).completo
+            nombre: data.rows.item(i).nombre
           });
         }
       }
