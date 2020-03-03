@@ -1,32 +1,8 @@
 import { Platform } from '@ionic/angular';
 import { Injectable } from '@angular/core';
 import { SQLite, SQLiteObject } from '@ionic-native/sqlite/ngx';
-import { BehaviorSubject, Observable, VirtualTimeScheduler } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { IData } from '../interfaces/data-i';
-
-export interface Estudios {
-  idEstudios: string;
-  nombre: string;
-}
-
-export interface Grupos {
-  idGrupo: string;
-  nombre: string;
-  idEstudios: string;
-}
-
-export interface diaClase {
-  idDiaClase: string;
-}
-
-export interface horaClase {
-  idHoraClase: string;
-}
-
-export interface materia {
-  nombre: string;
-}
-
 @Injectable({
   providedIn: 'root'
 })
@@ -82,18 +58,30 @@ export class DatabaseService {
     })
   }
 
-  getNombreDia() {
-    return this.database.executeSql('Select * from diaSemana', []).then((data) => {
+  getDiaSemana() {
+    return this.database.executeSql('Select nombre from diaSemana', []).then((data) => {
       let diaSemana = [];
       if (data.rows.length > 0) {
         for (let i = 0; i < data.rows.length; i++) {
           diaSemana.push({
-            idDiaSemana: data.rows.item(i).idDiaSemana,
             nombre: data.rows.item(i).nombre
           });
         }
       }
       return diaSemana;
+    })
+  }
+  getHoraSemana() {
+    return this.database.executeSql('Select descripcion from horasSemana', []).then((data) => {
+      let horasSemana = [];
+      if (data.rows.length > 0) {
+        for (let i = 0; i < data.rows.length; i++) {
+          horasSemana.push({
+            descripcion: data.rows.item(i).descripcion
+          });
+        }
+      }
+      return horasSemana;
     })
   }
 
@@ -139,18 +127,17 @@ export class DatabaseService {
     })
   }
 
-  public readOwo(idGrupo) {
-    return new Promise((resolve, reject) => {
-      var query = 'Select idDiaClase from diaClase WHERE idGrupo=' + idGrupo + '';
-      this.database.executeSql(query, []).then((res) => {
-        let todos = [];
-        if (res.rows.length > 0) {
-          todos.push(res.rows.item(0))
+  getDescripcion(nombreMateria) {
+    return this.database.executeSql('Select completo from materia Where nombre="' + nombreMateria + '"', []).then((data) => {
+      let materia = [];
+      if (data.rows.length > 0) {
+        for (let i = 0; i < data.rows.length; i++) {
+          materia.push({
+            completo: data.rows.item(i).completo
+          });
         }
-        resolve(todos)
-      }, (error) => {
-        reject(error);
-      });
+      }
+      return materia;
     })
   }
 

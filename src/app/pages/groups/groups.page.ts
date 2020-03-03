@@ -1,6 +1,7 @@
-import { DatabaseService, Estudios } from './../../services/database.service';
+import { DatabaseService} from './../../services/database.service';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, NavigationExtras  } from '@angular/router';
+import { Estudios } from './../../core/model/estudios';
 
 @Component({
   selector: 'app-groups',
@@ -9,12 +10,10 @@ import { ActivatedRoute, Router, NavigationExtras  } from '@angular/router';
 })
 export class GroupsPage {
   private grupos = [];
-  id: string;
   estudios: Estudios;
 
   constructor(private db: DatabaseService, private activeRoute: ActivatedRoute, private router: Router) {
     this.estudios = this.router.getCurrentNavigation().extras.state.estudio;
-    this.id = this.estudios.idEstudios;
     this.db.getDatabaseState().subscribe(rdy => {
       if (rdy) {
         this.getGrupos();
@@ -24,7 +23,7 @@ export class GroupsPage {
 
   getGrupos(){
       if(this.grupos.length === 0){
-        this.db.getGrupos(this.id).then(data => {
+        this.db.getGrupos(this.estudios.idEstudios).then(data => {
         this.grupos = data;
       })
     }

@@ -1,6 +1,6 @@
 import { Router, NavigationExtras } from '@angular/router';
 import { DatabaseService } from './../../services/database.service';
-import { Component, OnInit } from '@angular/core';
+import { Component} from '@angular/core';
 
 @Component({
   selector: 'app-start',

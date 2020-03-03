@@ -5,41 +5,11 @@
 </ion-header>
 
 <ion-content>
-
-<ion-grid>
-  <ion-row>
-    <ion-col *ngFor="let item of diaSemana">
-      {{item.nombre}}
-    </ion-col>
-  </ion-row>
-    <ion-row>
-    <ion-col *ngFor="let item of materiaOWO">
-      {{item.nombre}}
-    </ion-col>
-  </ion-row>
-</ion-grid>
-
-<ion-grid>
-  <ion-row *ngFor="let item of diaSemana">
-  <ion-col>
-      {{item.nombre}}
-  </ion-col>
-  </ion-row>
-</ion-grid>
-<ion-grid>
-  <ion-row *ngFor="let item of diaClase">
-  <ion-col>
-      {{item.idDiaClase}}
-  </ion-col>
-  </ion-row>
-</ion-grid>
-
-<ion-grid>
-  <ion-row *ngFor="let item of materia">
-  <ion-col>
-      {{item.nombre}}
-  </ion-col>
-  </ion-row>
-</ion-grid>
-
+  <ion-grid>
+    <ion-row *ngFor="let index of elementos">
+      <ion-col *ngFor="let item of horario[index]" (click)="obtenerDescripcion(item)">
+         {{item}}
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>
